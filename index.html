@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daybloom - Student Goal Tracker & Daily Habit Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Header & Top Navigation -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand">
+        <span class="brand-icon" aria-hidden="true">
+          <!-- Flower bloom SVG logo -->
+          <svg viewBox="0 0 32 32" width="28" height="28" fill="none">
+            <circle cx="16" cy="16" r="4.5" fill="var(--brand-center)" />
+            <path d="M16 4C14.2 8 10 11.5 6 12C10 14 13.5 17.8 14 22C16 18 19.5 14.2 24 14C20 12.2 17.8 8 16 4Z" fill="var(--brand-petals)" opacity="0.9"/>
+            <path d="M16 28C17.8 24 22 20.5 26 20C22 18 18.5 14.2 18 10C16 14 12.5 17.8 8 18C12 19.8 14.2 24 16 28Z" fill="var(--brand-petals-secondary)" opacity="0.85"/>
+          </svg>
+        </span>
+        <span class="brand-title">Daybloom</span>
+      </div>
+
+      <!-- Desktop Navigation -->
+      <nav class="nav-desktop" aria-label="Main Navigation">
+        <button type="button" class="nav-btn active" data-section="dashboard">
+          <span class="nav-icon" aria-hidden="true">🏠</span>
+          <span>Dashboard</span>
+        </button>
+        <button type="button" class="nav-btn" data-section="goals">
+          <span class="nav-icon" aria-hidden="true">🎯</span>
+          <span>Goals</span>
+        </button>
+        <button type="button" class="nav-btn" data-section="progress">
+          <span class="nav-icon" aria-hidden="true">📈</span>
+          <span>Progress</span>
+        </button>
+        <button type="button" class="nav-btn" data-section="profile">
+          <span class="nav-icon" aria-hidden="true">👤</span>
+          <span>Profile</span>
+        </button>
+      </nav>
+
+      <!-- Theme & Account Actions -->
+      <div class="header-actions">
+        <button type="button" id="auth-btn" class="auth-btn" aria-label="Sign In or Log In (Optional)" title="Sign In or Log In (Optional)">
+          <span id="auth-btn-icon" aria-hidden="true">👤</span>
+          <span id="auth-btn-label">Sign In</span>
+        </button>
+        <button type="button" id="theme-toggle-btn" class="theme-btn" aria-label="Toggle light or dark theme" title="Toggle Light / Dark Mode">
+          <span id="theme-icon" aria-hidden="true">🌙</span>
+          <span id="theme-label" class="theme-label-text">Dark</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main App Container -->
+  <main class="main-content" id="main-content">
+    
+    <!-- 1. DASHBOARD SECTION -->
+    <section id="section-dashboard" class="app-section active">
+      <!-- Greeting & Date Card -->
+      <div class="dashboard-hero card">
+        <div class="hero-text-content">
+          <p class="hero-date" id="dashboard-date">Friday, 16 October 2026</p>
+          <h1 class="hero-greeting" id="dashboard-greeting">Hello there!</h1>
+          <p class="hero-subtitle">Ready to cultivate your habits and achieve your personal goals today?</p>
+        </div>
+        <div class="hero-bloom-badge" id="hero-level-badge" title="Current Bloom Level">
+          <span class="badge-icon">🌱</span>
+          <div class="badge-details">
+            <span class="badge-title" id="hero-level-title">Seedling</span>
+            <span class="badge-points" id="hero-points-count">0 pts</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Summary Cards -->
+      <div class="summary-grid">
+        <div class="summary-card card">
+          <div class="summary-icon-wrap icon-blue">
+            <span>📋</span>
+          </div>
+          <div class="summary-info">
+            <span class="summary-label">Total Goals</span>
+            <span class="summary-value" id="summary-total-goals">0</span>
+          </div>
+        </div>
+
+        <div class="summary-card card">
+          <div class="summary-icon-wrap icon-green">
+            <span>✅</span>
+          </div>
+          <div class="summary-info">
+            <span class="summary-label">Done Today</span>
+            <span class="summary-value" id="summary-done-today">0</span>
+          </div>
+        </div>
+
+        <div class="summary-card card">
+          <div class="summary-icon-wrap icon-teal">
+            <span>📊</span>
+          </div>
+          <div class="summary-info">
+            <span class="summary-label">Today's Progress</span>
+            <span class="summary-value" id="summary-percent-today">0%</span>
+          </div>
+        </div>
+
+        <div class="summary-card card">
+          <div class="summary-icon-wrap icon-purple">
+            <span>✨</span>
+          </div>
+          <div class="summary-info">
+            <span class="summary-label">Current Points</span>
+            <span class="summary-value" id="summary-points">0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rotating Quotes Banner -->
+      <div class="quote-banner card" aria-live="polite">
+        <div class="quote-icon-col" aria-hidden="true">💡</div>
+        <div class="quote-content-col">
+          <span class="quote-label">Daily Inspiration</span>
+          <p class="quote-text" id="quote-text">Every small effort today plants the seeds of tomorrow's success.</p>
+        </div>
+      </div>
+
+      <!-- Today's Pending Reminders Panel -->
+      <div class="reminder-panel card">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title">Today's Goal Reminders</h2>
+            <p class="panel-desc">Pending tasks remaining for today</p>
+          </div>
+          <button type="button" class="btn btn-secondary btn-sm" id="btn-goto-goals" data-section="goals">
+            Manage Goals →
+          </button>
+        </div>
+        <div id="reminder-list-container" class="reminder-list-container">
+          <!-- Dynamically populated or empty state -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. GOALS SECTION -->
+    <section id="section-goals" class="app-section">
+      <div class="section-heading">
+        <div>
+          <h1 class="section-title">Daily Goals</h1>
+          <p class="section-subtitle">Track, edit, and check off your daily recurring habits.</p>
+        </div>
+      </div>
+
+      <!-- Add Goal Form Card -->
+      <div class="card add-goal-card">
+        <h2 class="card-title">Add a New Daily Goal</h2>
+        <form id="add-goal-form" class="goal-form" novalidate>
+          <div class="form-row">
+            <div class="form-group flex-grow">
+              <label for="goal-name-input">Goal Name <span class="required-star">*</span></label>
+              <input 
+                type="text" 
+                id="goal-name-input" 
+                name="goalName" 
+                class="form-control" 
+                placeholder="e.g. Study 2 hours, 20 pushups, Read 10 pages..." 
+                maxlength="60" 
+                required
+              />
+              <span class="char-count" id="goal-char-count">0/60</span>
+            </div>
+            
+            <div class="form-group form-group-sm">
+              <label for="goal-category-select">Category</label>
+              <select id="goal-category-select" name="goalCategory" class="form-control">
+                <option value="Study">Study</option>
+                <option value="Exercise">Exercise</option>
+                <option value="Reading">Reading</option>
+                <option value="Health">Health</option>
+                <option value="Hobby">Hobby</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div class="form-group form-actions-align">
+              <button type="submit" class="btn btn-primary" id="btn-submit-goal">
+                <span>➕ Add Goal</span>
+              </button>
+            </div>
+          </div>
+          <!-- Inline Error message container -->
+          <div id="add-goal-error" class="form-error" role="alert" style="display: none;"></div>
+        </form>
+      </div>
+
+      <!-- Category Filter Tabs -->
+      <div class="filter-bar" role="toolbar" aria-label="Goal category filters">
+        <span class="filter-label">Filter:</span>
+        <div class="filter-buttons-list" id="category-filter-buttons">
+          <button type="button" class="filter-btn active" data-category="All">All</button>
+          <button type="button" class="filter-btn" data-category="Study">Study</button>
+          <button type="button" class="filter-btn" data-category="Exercise">Exercise</button>
+          <button type="button" class="filter-btn" data-category="Reading">Reading</button>
+          <button type="button" class="filter-btn" data-category="Health">Health</button>
+          <button type="button" class="filter-btn" data-category="Hobby">Hobby</button>
+          <button type="button" class="filter-btn" data-category="Other">Other</button>
+        </div>
+      </div>
+
+      <!-- Goals List -->
+      <div id="goals-container" class="goals-grid" aria-live="polite">
+        <!-- Goal cards populated dynamically -->
+      </div>
+    </section>
+
+    <!-- 3. PROGRESS SECTION -->
+    <section id="section-progress" class="app-section">
+      <div class="section-heading">
+        <div>
+          <h1 class="section-title">Your Progress & Achievements</h1>
+          <p class="section-subtitle">Monitor your consistency, streak milestones, and earned points.</p>
+        </div>
+      </div>
+
+      <div class="progress-top-grid">
+        <!-- Today's Completion Visual Card -->
+        <div class="card progress-ring-card">
+          <h2 class="card-title">Today's Completion</h2>
+          <div class="ring-display-wrap">
+            <svg class="progress-ring-svg" viewBox="0 0 160 160" width="160" height="160">
+              <circle class="ring-bg" cx="80" cy="80" r="66" stroke-width="14" fill="none" />
+              <circle class="ring-fill" id="progress-circle-fill" cx="80" cy="80" r="66" stroke-width="14" fill="none"
+                stroke-dasharray="414.69" stroke-dashoffset="414.69" stroke-linecap="round" />
+            </svg>
+            <div class="ring-center-content">
+              <span class="ring-percentage" id="progress-ring-text">0%</span>
+              <span class="ring-subtext" id="progress-ring-count">0/0 Done</span>
+            </div>
+          </div>
+          <div class="progress-bar-linear">
+            <div class="linear-bar-fill" id="linear-bar-fill" style="width: 0%;"></div>
+          </div>
+        </div>
+
+        <!-- Streaks & Level Card -->
+        <div class="card streaks-card">
+          <h2 class="card-title">Streaks & Level Status</h2>
+          <div class="streaks-row">
+            <div class="streak-box">
+              <span class="streak-icon">🔥</span>
+              <div class="streak-details">
+                <span class="streak-val" id="current-streak-val">0</span>
+                <span class="streak-label">Current Day Streak</span>
+              </div>
+            </div>
+            <div class="streak-box">
+              <span class="streak-icon">🏆</span>
+              <div class="streak-details">
+                <span class="streak-val" id="best-streak-val">0</span>
+                <span class="streak-label">Best Streak Ever</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="level-status-box">
+            <div class="level-header">
+              <span class="level-tier" id="level-tier-name">Seedling</span>
+              <span class="level-pts" id="level-total-pts">0 Points</span>
+            </div>
+            <div class="level-progress-track">
+              <div class="level-progress-fill" id="level-progress-fill" style="width: 0%;"></div>
+            </div>
+            <div class="level-markers">
+              <span>0 (Seedling)</span>
+              <span>50 (Sprout)</span>
+              <span>150 (Bloom)</span>
+              <span>300+ (Full Bloom)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Weekly 7-Day Chart -->
+      <div class="card weekly-chart-card">
+        <div class="chart-header">
+          <div>
+            <h2 class="card-title">Weekly Habit Consistency</h2>
+            <p class="chart-subtitle">Daily completion rates over the past 7 days</p>
+          </div>
+          <div class="chart-legend">
+            <span class="legend-dot"></span>
+            <span>% Goals Completed</span>
+          </div>
+        </div>
+
+        <div class="chart-container" id="weekly-chart-container" aria-label="Last 7 days completion bar chart">
+          <!-- Bars generated dynamically via JavaScript -->
+        </div>
+      </div>
+
+      <!-- Points History List -->
+      <div class="card points-history-card">
+        <div class="panel-header">
+          <div>
+            <h2 class="card-title">Recent Points Log</h2>
+            <p class="panel-desc">Last 10 point adjustments and rewards</p>
+          </div>
+          <div class="points-pill-total" id="points-pill-summary">
+            Total: 0 pts
+          </div>
+        </div>
+        <div id="points-history-list" class="points-history-list">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. PROFILE SECTION -->
+    <section id="section-profile" class="app-section">
+      <div class="section-heading">
+        <div>
+          <h1 class="section-title">Student Profile</h1>
+          <p class="section-subtitle">Personalize your Daybloom dashboard and academic resources.</p>
+        </div>
+      </div>
+
+      <div class="profile-layout-grid">
+        <!-- Profile Form Card -->
+        <div class="card profile-form-card">
+          <h2 class="card-title">Personal Details</h2>
+          <form id="profile-form" novalidate>
+            <div class="form-group">
+              <label for="profile-name">Student Name</label>
+              <input 
+                type="text" 
+                id="profile-name" 
+                name="name" 
+                class="form-control" 
+                placeholder="e.g. Riya, Alex, Jordan" 
+                maxlength="50"
+              />
+            </div>
+
+            <div class="form-row-2">
+              <div class="form-group">
+                <label for="profile-age">Age (10 to 100)</label>
+                <input 
+                  type="number" 
+                  id="profile-age" 
+                  name="age" 
+                  class="form-control" 
+                  min="10" 
+                  max="100" 
+                  placeholder="e.g. 19"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="profile-standard">Standard / Class</label>
+                <input 
+                  type="text" 
+                  id="profile-standard" 
+                  name="standard" 
+                  class="form-control" 
+                  placeholder="e.g. 1st Year, 12th, 11th"
+                  maxlength="30"
+                />
+              </div>
+            </div>
+
+            <div id="profile-error" class="form-error" role="alert" style="display: none;"></div>
+
+            <!-- College Student Toggle -->
+            <div class="college-toggle-wrapper">
+              <div class="toggle-info">
+                <span class="toggle-title">College Student</span>
+                <span class="toggle-description">Enable to display the curated 1st-year engineering reference books.</span>
+              </div>
+              <label class="switch" for="college-student-toggle">
+                <input type="checkbox" id="college-student-toggle" name="collegeStudent" />
+                <span class="slider round" aria-hidden="true"></span>
+                <span class="sr-only">Toggle College Student status</span>
+              </label>
+            </div>
+
+            <div class="profile-buttons-row">
+              <button type="submit" class="btn btn-primary" id="btn-save-profile">
+                💾 Save Profile
+              </button>
+              <button type="button" class="btn btn-secondary" id="btn-clear-profile">
+                🧹 Clear Profile
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Profile Preview / Motivation Card -->
+        <div class="card profile-overview-card">
+          <h2 class="card-title">Student Summary</h2>
+          <div class="profile-avatar-circle" id="profile-avatar-initial">
+            ?
+          </div>
+          <h3 class="profile-display-name" id="display-profile-name">Guest Student</h3>
+          <p class="profile-display-meta" id="display-profile-meta">Age: Not set • Class: Not set</p>
+          <div class="profile-stats-mini">
+            <div class="mini-stat">
+              <span class="mini-stat-num" id="profile-stat-streak">0</span>
+              <span class="mini-stat-lbl">Day Streak</span>
+            </div>
+            <div class="mini-stat">
+              <span class="mini-stat-num" id="profile-stat-points">0</span>
+              <span class="mini-stat-lbl">Points</span>
+            </div>
+            <div class="mini-stat">
+              <span class="mini-stat-num" id="profile-stat-goals">0</span>
+              <span class="mini-stat-lbl">Active Goals</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reference Books Section (Visible ONLY when College Student is ON) -->
+      <section id="reference-books-section" class="card reference-books-card" style="display: none;">
+        <div class="ref-header">
+          <span class="ref-icon" aria-hidden="true">📚</span>
+          <div>
+            <h2 class="card-title">Reference Books for 1st Year College Students</h2>
+            <p class="ref-desc">Curated foundational textbooks for engineering and science curricula.</p>
+          </div>
+        </div>
+
+        <div class="books-grid" id="books-grid-container">
+          <!-- 8 Curated Books will be rendered here -->
+        </div>
+      </section>
+    </section>
+
+  </main>
+
+  <!-- Tagline at the very bottom of the main page -->
+  <footer class="app-footer">
+    <div class="footer-container">
+      <p class="tagline">Small goals, done daily, grow into big wins.</p>
+      <p class="copyright">Daybloom • Daily Student Goal Dashboard</p>
+    </div>
+  </footer>
+
+  <!-- Mobile Bottom Navigation Bar -->
+  <nav class="nav-mobile-bottom" aria-label="Mobile Navigation">
+    <button type="button" class="mobile-nav-btn active" data-section="dashboard">
+      <span class="mobile-icon" aria-hidden="true">🏠</span>
+      <span class="mobile-label">Home</span>
+    </button>
+    <button type="button" class="mobile-nav-btn" data-section="goals">
+      <span class="mobile-icon" aria-hidden="true">🎯</span>
+      <span class="mobile-label">Goals</span>
+    </button>
+    <button type="button" class="mobile-nav-btn" data-section="progress">
+      <span class="mobile-icon" aria-hidden="true">📈</span>
+      <span class="mobile-label">Progress</span>
+    </button>
+    <button type="button" class="mobile-nav-btn" data-section="profile">
+      <span class="mobile-icon" aria-hidden="true">👤</span>
+      <span class="mobile-label">Profile</span>
+    </button>
+  </nav>
+
+  <!-- Edit Goal Modal -->
+  <div id="edit-goal-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="edit-modal-title" style="display: none;">
+    <div class="modal-box card">
+      <div class="modal-header">
+        <h2 id="edit-modal-title" class="modal-title">Edit Daily Goal</h2>
+        <button type="button" class="modal-close-btn" id="btn-close-edit-modal" aria-label="Close edit modal">✕</button>
+      </div>
+      <form id="edit-goal-form" novalidate>
+        <input type="hidden" id="edit-goal-id" />
+        <div class="form-group">
+          <label for="edit-goal-name">Goal Name <span class="required-star">*</span></label>
+          <input 
+            type="text" 
+            id="edit-goal-name" 
+            class="form-control" 
+            maxlength="60" 
+            required 
+          />
+          <span class="char-count" id="edit-char-count">0/60</span>
+        </div>
+        <div class="form-group">
+          <label for="edit-goal-category">Category</label>
+          <select id="edit-goal-category" class="form-control">
+            <option value="Study">Study</option>
+            <option value="Exercise">Exercise</option>
+            <option value="Reading">Reading</option>
+            <option value="Health">Health</option>
+            <option value="Hobby">Hobby</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div id="edit-goal-error" class="form-error" role="alert" style="display: none;"></div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="btn-cancel-edit">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btn-save-edit">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div id="delete-confirm-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="delete-modal-title" style="display: none;">
+    <div class="modal-box card">
+      <div class="modal-header">
+        <h2 id="delete-modal-title" class="modal-title">Delete Goal</h2>
+        <button type="button" class="modal-close-btn" id="btn-close-delete-modal" aria-label="Close delete modal">✕</button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete <strong id="delete-goal-name-text">this goal</strong>?</p>
+        <p class="text-muted text-sm">Past daily achievements will remain recorded, but this goal will no longer repeat.</p>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" id="btn-cancel-delete">Cancel</button>
+        <button type="button" class="btn btn-danger" id="btn-confirm-delete">Delete Goal</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container" aria-live="assertive"></div>
+
+  <!-- Main Application Script -->
+  <script src="script.js"></script>
+</body>
+</html>
